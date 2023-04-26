@@ -94,6 +94,7 @@ function Matches({loading, gameData, questions, setAnswers, answers, setAnswersP
         if(answers[currentQuestion] === answerValue) {
             newList[currentQuestion] = "empty";
             setAnswers(newList);
+            console.log(answerIndex);
         } else {
             newList[currentQuestion] = answerValue;
             setAnswers(newList);

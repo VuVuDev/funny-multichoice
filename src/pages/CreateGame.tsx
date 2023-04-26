@@ -1,4 +1,4 @@
-import React, {useRef, useState } from 'react'
+import React, {useRef} from 'react'
 import { useNavigate } from 'react-router'
 import Topbar from '../components/Topbar'
 import axios from 'axios';
@@ -45,7 +45,7 @@ interface IPros {
 
 }
 
-function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerOne, playerTwo, gameData, setLoading, tempArray, questions,arrayTempOne, arrayTempTwo, setQuestions, setTempArray, setArrayTempOne, setArrayTempTwo}:IPros) {
+function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerOne, playerTwo, gameData, setLoading, tempArray, setQuestions, setTempArray, setArrayTempOne, setArrayTempTwo}:IPros) {
     const navigate = useNavigate();
     const inputRefOne = useRef<HTMLInputElement>(null);
     const inputRefTwo = useRef<HTMLInputElement>(null);
