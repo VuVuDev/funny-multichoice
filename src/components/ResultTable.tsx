@@ -27,7 +27,7 @@ interface Ipros {
 
 function ResultTable({gameData, matchCount, search, searchList}:Ipros) {
     return (
-        <div className='mt-[20px] sm:m-0 m-1'>
+        <div className='sm:mt-[20px] mt-[20px] sm:m-0 m-1'>
             <table>
                 <tbody>
                     <tr>

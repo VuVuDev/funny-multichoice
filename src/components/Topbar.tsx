@@ -5,7 +5,7 @@ import { IoMdCloseCircle, IoMdRefreshCircle, IoMdHelpCircle } from "react-icons/
 function Topbar() {
     const closeWindows = () => {
         if (confirm("Close Window?")) {
-            close();
+            window.close();
           }
     }
     return (

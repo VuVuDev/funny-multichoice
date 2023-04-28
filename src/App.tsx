@@ -219,12 +219,22 @@ const handleSetQuestion = (data:any) => {
   useEffect(() => {
     const storeAnswerList = localStorage.getItem("answerList");
     if(storeAnswerList) {
-        setAnswers(JSON.parse(storeAnswerList))
+        setAnswers(JSON.parse(storeAnswerList));
     }
   }, [])
   useEffect(() => {
       localStorage.setItem("answerList", JSON.stringify(answers))
   }, [answers])
+
+  useEffect(() => {
+    const storeMatchCount = localStorage.getItem("matchCount");
+    if(storeMatchCount) {
+      setMatchCount(JSON.parse(storeMatchCount));
+    }
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("matchCount", JSON.stringify(matchCount))
+  },[matchCount]);
 
   return (
     <div className='bg-gradient-to-tr from-[#00aaff] to-[#e625ff] z-10'>
