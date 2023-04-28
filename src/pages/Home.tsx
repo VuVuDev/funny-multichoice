@@ -3,14 +3,24 @@ import { useNavigate } from 'react-router';
 import Topbar from '../components/Topbar';
 
 
-
-interface IPlayer {
-    player: {
-        id: number;
-        name: string;
-        status: string;
+interface IMatch {
+    match: {
+      matchId: number;
+      playerChoice: string[];
+      correctResult: string[];
+      time: number;
+      score:number;
+      status: string;
     }
-}
+  }
+  
+  interface IPlayer {
+    player: {
+      id: number;
+      name: string;
+      match: IMatch['match'][];
+    }
+  }
 
 interface Ipros {
     setGameData: React.Dispatch<React.SetStateAction<IPlayer['player'][]>>

@@ -4,13 +4,24 @@ import { useNavigate } from 'react-router';
 import { WaveSpinner } from "react-spinners-kit";
 
 
-interface IPlayer {
-    player: {
-        id: number;
-        name: string;
-        status: string;
+interface IMatch {
+    match: {
+      matchId: number;
+      playerChoice: string[];
+      correctResult: string[];
+      time: number;
+      score:number;
+      status: string;
     }
-}
+  }
+  
+  interface IPlayer {
+    player: {
+      id: number;
+      name: string;
+      match: IMatch['match'][];
+    }
+  }
 interface ILable {
     lableAnswer: {
         key: string;
@@ -35,11 +46,10 @@ interface Ipros {
     questions: ITempArray['temp'][];
     setAnswers: React.Dispatch<React.SetStateAction<string[]>>;
     answers: string[];
-    setAnswersPlayerOne: React.Dispatch<React.SetStateAction<string[]>>;
-    setAnswersPlayerTwo: React.Dispatch<React.SetStateAction<string[]>>;
+    matchCount: number
 }
 
-function Matches({loading, gameData, questions, setAnswers, answers, setAnswersPlayerOne, setAnswersPlayerTwo}:Ipros) {
+function Matches({loading, gameData, questions, setAnswers, answers, setGameData, arrayTempOne, arrayTempTwo, matchCount}:Ipros) {
     const navigate = useNavigate();
     const gotoResult = () => {
         navigate("/result")
@@ -48,19 +58,24 @@ function Matches({loading, gameData, questions, setAnswers, answers, setAnswersP
     const [currentQuestion, setCurrentQuestion] = useState<number>(0);
     const [countDown, setCountDown] = useState<number>(10)
     const [countDownQuestion, setCoutnDownQuestion] = useState<number>(2)
-
-     useEffect(() => {
+    const [countPlayerOneTime, setCountPlayerOneTime] = useState<number>(0);
+    const [countPlayerTwoTime, setCountPlayeTwoTime] = useState<number>(0);
+    
+    
+    useEffect(() => {
         const timer = setInterval(() => {
             if(loading==false) {
                 setCountDown(countDown => countDown - 1);
             }
         },1000); 
-        if(countDown == -1 || countDown < -1) {
+        if(countDown === -1 || countDown < -1) {
+            handleSetTimePLay(); 
             setCountDown(10);
             setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
             setCurrentQuestion(currentQuestion => currentQuestion + 1);
         }
         if(currentQuestion === 5 && countDown == 0) {
+            handleSetTimePLay();
             clearInterval(timer);
             gotoResult()
         }
@@ -72,11 +87,14 @@ function Matches({loading, gameData, questions, setAnswers, answers, setAnswersP
 
     const handleSubmitAction = () => {
         if(currentQuestion === questions.length - 1 ) {
+            handleSetTimePLay();
             gotoResult();
             handleSetPlayerChosen();
+            setPlayerRating()
             return;
         } else {
             handleSubmit();
+            handleSetTimePLay();
         }
     }
     const handleSubmit = () => {
@@ -87,8 +105,16 @@ function Matches({loading, gameData, questions, setAnswers, answers, setAnswersP
             setCoutnDownQuestion(countDownQuestion => countDownQuestion - 1);
         }
     }
-    
-    console.log(answers);
+
+    const handleSetTimePLay = () => {
+        if(currentPlayer === 0 ) {
+            setCountPlayerOneTime(countPlayerOneTime => countPlayerOneTime + (10 - countDown));
+        }
+        if(currentPlayer === 1) {
+            setCountPlayeTwoTime(countPlayerTwoTime => countPlayerTwoTime + (10 - countDown));
+        }
+    }
+    // console.log(answers);
     const handleSubmitAnswer = (answerIndex: number, answerValue: string) => {  
         let newList = [...answers];
         if(answers[currentQuestion] === answerValue) {
@@ -101,6 +127,9 @@ function Matches({loading, gameData, questions, setAnswers, answers, setAnswersP
         }
     }
 
+    let countOne = 0;
+    let countTwo = 0;
+
     const handleSetPlayerChosen = () => {
         let tempA:string[] = [];
         let tempB:string[] = [];
@@ -111,8 +140,133 @@ function Matches({loading, gameData, questions, setAnswers, answers, setAnswersP
                 tempB.push(answers[i]);
             }
         }
-        setAnswersPlayerOne(tempA);
-        setAnswersPlayerTwo(tempB);
+        // setAnswersPlayerOne(tempA);
+        // setAnswersPlayerTwo(tempB);
+        const newGameData = gameData.map((value: IPlayer['player'], index:number) => {
+            if(index == 0) {
+                value.match.map((item:IMatch['match'], index: number) => {
+                    if (index == 0 && matchCount == 1 && item.matchId == 0) {
+                        item.correctResult = arrayTempOne;
+                        item.playerChoice = tempA;
+                        for(let i = 0; i < item.correctResult.length; i++) {
+                            if(tempA[i] === arrayTempOne[i]) {
+                                countOne++;
+                            }
+                        }
+                        item.score = countOne;
+                        item.time = countPlayerOneTime;
+                    }
+
+                    if(index == 1 && matchCount == 2 && item.matchId == 1) {
+                        item.correctResult = arrayTempOne;
+                        item.playerChoice = tempA;
+                        for(let i = 0; i < item.correctResult.length; i++) {
+                            if(tempA[i] === arrayTempOne[i]) {
+                                countOne++;
+                            }
+                        }
+                        item.score = countOne;
+                        item.time = countPlayerOneTime;
+                    }
+
+                    return {
+                        ...item
+                    }
+                })
+            }
+            if(index == 1) {
+                value.match.map((item:IMatch['match'], index: number) => {
+                    if(index == 0 && matchCount == 1 && item.matchId == 0) {
+                        item.correctResult = arrayTempTwo
+                        item.playerChoice = tempB;
+                        for (let i = 0; i < item.correctResult.length; i++ ) {
+                            if(tempB[i] === arrayTempTwo[i]) {
+                                countTwo++;
+                            }
+                        }  
+                        item.score = countTwo;
+                        item.time = countPlayerTwoTime;
+                    }
+                    if(index == 1 && matchCount == 2 && item.matchId == 1) {
+                        item.correctResult = arrayTempTwo
+                        item.playerChoice = tempB;
+                        for (let i = 0; i < item.correctResult.length; i++ ) {
+                            if(tempB[i] === arrayTempTwo[i]) {
+                                countTwo++;
+                            }
+                        }  
+                        item.score = countTwo;
+                        item.time = countPlayerTwoTime;
+                    }
+                    return {
+                        ...item
+                    }
+                })
+            }
+            return {
+                ...value
+            }
+        })
+        setGameData(newGameData);
+    }
+
+    const setPlayerRating = () => {
+        const newGameData = gameData.map((value: IPlayer['player'], index:number) => {
+            if(index == 0) {
+                value.match.map((item:IMatch['match'], index: number) => {
+                    if (index == 0 && matchCount == 1 && item.matchId == 0) {
+                        if(countOne > countTwo) {
+                            item.status = "Winner"
+                        } else if(countOne == countTwo) {
+                            item.status = "Draw"
+                        } else {
+                            item.status = "Loser"
+                        }
+                    }
+                    if (index == 1 && matchCount == 2 && item.matchId == 1) {
+                        if(countOne > countTwo) {
+                            item.status = "Winner"
+                        } else if(countOne == countTwo) {
+                            item.status = "Draw"
+                        } else {
+                            item.status = "Loser"
+                        }
+                    }
+                    return {
+                        ...item
+                    }
+                })
+            }
+            if(index == 1) {
+                value.match.map((item:IMatch['match'], index: number) => {
+                    if(index == 0 && matchCount == 1 && item.matchId == 0) {
+                        if(countOne < countTwo) {
+                            item.status = "Winner"
+                        } else if(countOne == countTwo) {
+                            item.status = "Draw"
+                        } else {
+                            item.status = "Loser"
+                        }
+                    }
+                    if(index == 1 && matchCount == 2 && item.matchId == 1) {
+                        if(countOne < countTwo) {
+                            item.status = "Winner"
+                        } else if(countOne == countTwo) {
+                            item.status = "Draw"
+                        } else {
+                            item.status = "Loser"
+                        }
+                    }
+                    return {
+                        item
+                    }
+                })
+            }
+            return {
+                ...value
+            }
+        })
+        setGameData(newGameData);
     }
 
     return (
@@ -123,7 +277,7 @@ function Matches({loading, gameData, questions, setAnswers, answers, setAnswersP
                 {/* load */}
                 <div className={`${loading ? "" : "hidden"}`}>
                     <div className='flex flex-col justify-center items-center mt-[50px]'>
-                        <h1 className='font-mono text-[50px] font-extrabold mb-[50px]'>MATCH 1</h1>
+                        <h1 className='font-mono text-[50px] font-extrabold mb-[50px]'>MATCH {matchCount}</h1>
                         <div className='flex flex-col items-center justify-center'>
                             <WaveSpinner size={60} color="#686769"/>
                             <p className='font-bold mt-[20px] text-[24px]'>Loading...</p>

@@ -1,16 +1,26 @@
 import React, {useRef} from 'react'
 import { useNavigate } from 'react-router'
 import Topbar from '../components/Topbar'
-import axios from 'axios';
 
 
-interface IPlayer {
-    player: {
-        id: number;
-        name: string;
-        status: string
+interface IMatch {
+    match: {
+      matchId: number;
+      playerChoice: string[];
+      correctResult: string[];
+      time: number;
+      score:number;
+      status: string;
     }
-}
+  }
+  
+  interface IPlayer {
+    player: {
+      id: number;
+      name: string;
+      match: IMatch['match'][];
+    }
+  }
 interface ILable {
     lableAnswer: {
         key: string;
@@ -42,10 +52,11 @@ interface IPros {
     setQuestions: React.Dispatch<React.SetStateAction<ITempArray['temp'][]>>;
     questions: ITempArray['temp'][];
     setAnswers: React.Dispatch<React.SetStateAction<string[]>>;
-
+    setMatchCount: React.Dispatch<React.SetStateAction<number>>; 
+    fetchData: () => void;
 }
 
-function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerOne, playerTwo, gameData, setLoading, tempArray, setQuestions, setTempArray, setArrayTempOne, setArrayTempTwo}:IPros) {
+function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerOne, playerTwo, gameData,setMatchCount, fetchData}:IPros) {
     const navigate = useNavigate();
     const inputRefOne = useRef<HTMLInputElement>(null);
     const inputRefTwo = useRef<HTMLInputElement>(null);
@@ -57,14 +68,28 @@ function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerO
         setPlayerOne({
             id:1,
             name: event.target.value,
-            status: ''
+            match: [{
+                matchId: 0,
+                playerChoice: ["empty", "empty", "empty"],
+                correctResult: ["empty", "empty", "empty"],
+                time: 0,
+                score: 0,
+                status: '',
+              }]
         })
     }
     const handleOnChangeSetPlayerTwo = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setPlayerTwo({
             id:2,
             name: event.target.value,
-            status: ''
+            match: [{
+                matchId: 0,
+                playerChoice: ["empty", "empty", "empty"],
+                correctResult: ["empty", "empty", "empty"],
+                time: 0,
+                score: 0,
+                status: '',
+              }]
         })
     }
     const handleSubmit = () => {
@@ -72,7 +97,8 @@ function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerO
             ...gameData,
             playerOne,
             playerTwo,
-        ])
+        ]);
+        setMatchCount(1);
         goToMatches();
         fetchData();
         setAnswers(Array.from({length: 6} , () => "empty"));
@@ -151,90 +177,6 @@ function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerO
         }
     }
 
-
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const responses = await Promise.all(
-                Array.from({length: 6}, () => axios.get("https://opentdb.com/api.php?amount=1&type=multiple"))
-            )
-            const data = responses.map((responses => responses.data.results));
-            handleSetQuestion(data);
-        }
-        catch (error) {
-            console.log(error);
-        }
-        finally {
-            setLoading(false);
-        }
-    }
-
-    const shuffle = (array:any) => {
-
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-          }
-        return array;
-    }
-    const getAnswerLable = (index: number) => {
-        return String.fromCharCode(65 + index);
-    }
-    const handleSetQuestion = (data:any) => {
-         let setQuestionList = data.map((value:any) => {
-            return value.map((item:any) => {
-                let shuffleAnswer = shuffle([...item.incorrect_answers, item.correct_answer]);
-                let correctAnswerIndex = shuffleAnswer.indexOf(item.correct_answer);
-                const lableAnswers = shuffleAnswer.map((answer:string, index:number) => ({
-                    key: getAnswerLable(index),
-                    answerKey: answer,
-                    isCorrect: index === correctAnswerIndex,
-                }));
-
-                return {
-                    text: item.question,
-                    answers: lableAnswers,
-                }
-            })
-        }) 
-        tempArray = setQuestionList;
-        setTempArray(setQuestionList);
-        setArrayTempOne([]);
-        setArrayTempTwo([]);
-        let questionCorrectTemp: string[] = [];
-        tempArray.map((value:any) => {
-            value.map((item:ITempArray['temp']) => {
-                // console.log(item);  
-                item.answers.map((stuff: ILable['lableAnswer']) => {
-                    if(stuff.isCorrect == true) {
-                        questionCorrectTemp.push(stuff.key);
-                    }
-                })
-            })
-        })
-        let temQuestions: ITempArray['temp'][] = [];
-        tempArray.map((value:any) => {
-            value.map((item:ITempArray['temp']) => {
-                temQuestions.push(item);
-            })
-        })
-        setQuestions(temQuestions);
-        temQuestions = [];
-        // conso    le.log(questionCorrectTemp);    
-        let tempA:string[] = [];
-        let tempB:string[] = [];
-        
-        for(let i = 0; i < questionCorrectTemp.length; i++) {
-            if(i%2 === 0) {
-                tempA.push(questionCorrectTemp[i]);
-            } else {
-                tempB.push(questionCorrectTemp[i]);
-            }
-        }
-        setArrayTempOne(tempA);
-        setArrayTempTwo(tempB);
-        questionCorrectTemp = [];
-    }
     return (
         <div className='w-screen h-screen flex items-center justify-center'>
             <div className='w-[960px] h-[520px] bg-[#ffffffc9] rounded-lg z-10'>
