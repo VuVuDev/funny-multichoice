@@ -1,6 +1,7 @@
 import Topbar from '../components/Topbar'
 import { useNavigate } from 'react-router'
 import { useState } from 'react';
+import ResultTable from '../components/ResultTable';
 
 
 interface IMatch {
@@ -63,185 +64,23 @@ function Result({gameData, setFinal, matchCount}:IPros) {
     console.log(matchCount);
     return (
         <div className='w-screen h-screen flex items-center justify-center'>
-            <div className='w-[960px] h-[520px] bg-[#ffffffc9] rounded-lg z-10'>
+            <div className='w-[960px] sm:h-[520px] h-[720px] bg-[#ffffffc9] rounded-lg z-10 m-3'>
                 <Topbar></Topbar>
                 
                 <div className='flex flex-col justify-center items-center'>
-                    <div className='mt-[50px]'>
-                         <h1 className='font-mono font-extrabold text-[40px]'>Match {matchCount} result🤩</h1>
-                         <div className='flex flex-row mt-[10px] rounded-md border-2 border-slate-400 items-center bg-slate-300 cursor-pointer'>
+                    <div className='sm:mt-[50px] mt-[120px]'>
+                         <h1 className='font-mono font-extrabold text-[40px] text-center sm:p-0 px-2'>Match {matchCount} result🤩</h1>
+                         <div className='flex flex-row mt-[10px] sm:m-0 mx-4 rounded-md border-2 border-slate-400 items-center bg-slate-300 cursor-pointer'>
                             <input type="text" placeholder='name' value={searchInput} className='pl-2 outline-none rounded-md mr-2 py-1 px-4' onChange={(e) => handleOnChangeSearch(e)}/>
                             <p className='font-bold' onClick={() => handlSearch()}>Search</p>
                          </div>
                     </div>
-                    <div className='mt-[20px]'>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th className='border-2 w-[160px] border-slate-400'>Player</th>
-                                    <th className='border-2 w-[160px] border-slate-400'>Answer</th>
-                                    <th className='border-2 w-[160px] border-slate-400'>Result</th>
-                                    <th className='border-2 w-[160px] border-slate-400'>Score</th>
-                                    <th className='border-2 w-[160px] border-slate-400'>Time</th>
-                                </tr>
-                                {
-                                    gameData.map((value:IPlayer['player'], index: number) => {
-                                        return (
-                                            <tr key={index} className={`${search ? "hidden" : ""}`}>
-                                                <td className='border-2  text-center border-slate-400'>{value.name}</td>
-                                                <td className='border-2  text-center border-slate-400'>{
-                                                    value.match.map((item:IMatch['match'], index: number) => {
-                                                        if(matchCount == 1 && item.matchId == 0) {
-                                                            return (
-                                                                <div key={index}>{item.playerChoice.map((stuff: string, index:number) => {
-                                                                    return (
-                                                                        <span key={index}>{index < 2 ? stuff + ", " : stuff}</span>
-                                                                    )
-                                                                })}</div>
-                                                            )
-                                                        } else if (matchCount == 2 && item.matchId == 1) {
-                                                            return (
-                                                                <div key={index}>{item.playerChoice.map((stuff: string, index:number) => {
-                                                                    return (
-                                                                        <span key={index}>{index < 2 ? stuff + ", " : stuff}</span>
-                                                                    )
-                                                                })}</div>
-                                                            )
-                                                        }
-                                                    })
-                                                }</td>
-                                                <td className='border-2  text-center border-slate-400'>{
-                                                    value.match.map((item:IMatch['match'], index: number) => {
-                                                        if(matchCount == 1 && item.matchId == 0) {
-                                                            return (
-                                                                <div key={index}>{item.correctResult.map((stuff: string, index:number) => {
-                                                                    return (
-                                                                        <span key={index}>{index < 2 ? stuff + ", " : stuff}</span>
-                                                                    )
-                                                                })}</div>
-                                                            )
-                                                        } else if (matchCount == 2 && item.matchId == 1) {
-                                                            return (
-                                                                <div key={index}>{item.correctResult.map((stuff: string, index:number) => {
-                                                                    return (
-                                                                        <span key={index}>{index < 2 ? stuff + ", " : stuff}</span>
-                                                                    )
-                                                                })}</div>
-                                                            )
-                                                        }
-                                                    })
-                                                }</td>
-                                                <td className='border-2  text-center border-slate-400'>{
-                                                     value.match.map((item:IMatch['match'], index:number) => {
-                                                        if(matchCount == 1 && item.matchId == 0) {
-                                                            return (
-                                                                <span key={index}>{item.score}</span>
-                                                            )
-                                                        } else if (matchCount == 2 && item.matchId == 1) {
-                                                            return (
-                                                                <span key={index}>{item.score}</span>
-                                                            )
-                                                        }
-                                                     })
-                                                }</td>
-                                                <td className='border-2  text-center border-slate-400'>{
-                                                    value.match.map((item:IMatch['match'], index:number) => {
-                                                        if(matchCount == 1 && item.matchId == 0) {
-                                                            return (
-                                                                <span key={index}>{item.time}</span>
-                                                            )
-                                                        } else if(matchCount == 2 && item.matchId == 1) {
-                                                            return (
-                                                                <span key={index}>{item.time}</span>
-                                                            )
-                                                        }
-                                                     })
-                                                }</td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-
-                            {
-                                    searchList.map((value:IPlayer['player'], index: number) => {
-                                        return (
-                                            <tr key={index} className={`${search ? "" : "hidden"}`}>
-                                                <td className='border-2  text-center border-slate-400'>{value.name}</td>
-                                                <td className='border-2  text-center border-slate-400'>{
-                                                   value.match.map((item:IMatch['match'], index: number) => {
-                                                        if(matchCount == 1 && item.matchId == 0) {
-                                                            return (
-                                                                <div key={index}>{item.playerChoice.map((stuff: string, index:number) => {
-                                                                    return (
-                                                                        <span key={index}>{index < 2 ? stuff + ", " : stuff}</span>
-                                                                    )
-                                                                })}</div>
-                                                            )
-                                                        } else if (matchCount == 2 && item.matchId == 1) {
-                                                            return (
-                                                                <div key={index}>{item.playerChoice.map((stuff: string, index:number) => {
-                                                                    return (
-                                                                        <span key={index}>{index < 2 ? stuff + ", " : stuff}</span>
-                                                                    )
-                                                                })}</div>
-                                                            )
-                                                        }
-                                                    })
-                                                }</td>
-                                                <td className='border-2  text-center border-slate-400'>{
-                                                   value.match.map((item:IMatch['match'], index: number) => {
-                                                        if(matchCount == 1 && item.matchId == 0) {
-                                                            return (
-                                                                <div key={index}>{item.correctResult.map((stuff: string, index:number) => {
-                                                                    return (
-                                                                        <span key={index}>{index < 2 ? stuff + ", " : stuff}</span>
-                                                                    )
-                                                                })}</div>
-                                                            )
-                                                        } else if (matchCount == 2 && item.matchId == 1) {
-                                                            return (
-                                                                <div key={index}>{item.correctResult.map((stuff: string, index:number) => {
-                                                                    return (
-                                                                        <span key={index}>{index < 2 ? stuff + ", " : stuff}</span>
-                                                                    )
-                                                                })}</div>
-                                                            )
-                                                        }
-                                                    })
-                                                }</td>
-                                                <td className='border-2  text-center border-slate-400'>{
-                                                     value.match.map((item:IMatch['match'], index:number) => {
-                                                        if(matchCount == 1 && item.matchId == 0) {
-                                                            return (
-                                                                <span key={index}>{item.score}</span>
-                                                            )
-                                                        } else if (matchCount == 2 && item.matchId == 1) {
-                                                            return (
-                                                                <span key={index}>{item.score}</span>
-                                                            )
-                                                        }
-                                                     })
-                                                }</td>
-                                                <td className='border-2  text-center border-slate-400'>{
-                                                    value.match.map((item:IMatch['match'], index:number) => {
-                                                        if(matchCount == 1 && item.matchId == 0) {
-                                                            return (
-                                                                <span key={index}>{item.time}</span>
-                                                            )
-                                                        } else if(matchCount == 2 && item.matchId == 1) {
-                                                            return (
-                                                                <span key={index}>{item.time}</span>
-                                                            )
-                                                        }
-                                                     })
-                                                }</td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                    <ResultTable
+                        gameData={gameData}
+                        matchCount={matchCount}
+                        search={search}
+                        searchList={searchList}
+                    ></ResultTable>
                     <div className='mt-[20px]'>
                         <button className='px-4 py-2 border-2 border-slate-400 rounded hover:bg-green-500 hover:text-white transition font-bold'
                         onClick={() => goToFinal()}

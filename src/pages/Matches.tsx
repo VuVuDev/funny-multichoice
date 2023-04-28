@@ -271,12 +271,12 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
 
     return (
         <div className='w-screen h-screen flex items-center justify-center'>
-            <div className='w-[960px] h-[520px] bg-[#ffffffc9] rounded-lg z-10'>
+            <div className='w-[960px] sm:h-[520px] h-[720px] bg-[#ffffffc9] rounded-lg z-10 m-3'>
                 <Topbar></Topbar>
 
                 {/* load */}
                 <div className={`${loading ? "" : "hidden"}`}>
-                    <div className='flex flex-col justify-center items-center mt-[50px]'>
+                    <div className='flex flex-col justify-center items-center sm:mt-[50px] mt-[200px]'>
                         <h1 className='font-mono text-[50px] font-extrabold mb-[50px]'>MATCH {matchCount}</h1>
                         <div className='flex flex-col items-center justify-center'>
                             <WaveSpinner size={60} color="#686769"/>
@@ -286,14 +286,14 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
                 </div>
 
                 <div className={`${loading ? "hidden" : ""}`}>
-                    <div className='p-[20px] w-full'>
-                        <div className='flex flex-col border-b-2 pb-[20px] border-slate-300'>
+                    <div className='sm:p-[20px] sm:w-full'>
+                        <div className='flex flex-col border-b-2 pb-[20px] border-slate-300 mx-2'>
                             <div className='flex justify-center items-center'>
                                 <h1 className='font-bold mt-[10px] text-[24px]'>{gameData[currentPlayer]?.name}'s Turn</h1>
                             </div>
                             <div className='flex flex-row-reverse justify-between items-center'>
-                                <h3>{countDownQuestion} question left</h3>
-                                <div className='w-[45px] h-[45px] rounded-[50%] border-2 flex items-center justify-center font-bold border-slate-400'>
+                                <h3 className='sm:mr-0 mr-4'>{countDownQuestion} question left</h3>
+                                <div className='w-[45px] h-[45px] sm:ml-0 ml-4 rounded-[50%] border-2 flex items-center justify-center font-bold border-slate-400'>
                                     <span>{countDown}</span>
                                 </div>
                             </div>
@@ -301,18 +301,18 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
 
                         <div>
 
-                            <div className='flex items-center justify-center'>
+                            <div className='flex items-center justify-center p-2 text-center'>
                                 <p className='mt-[10px] font-bold' dangerouslySetInnerHTML={{__html: questions[currentQuestion]?.text}}></p>
                             </div>
                             <div className=''>
                                 <div className='flex flex-wrap gap-10 justify-center items-center mt-[40px]'>
                                 {
                                     questions[currentQuestion]?.answers.map((value:ILable['lableAnswer'], index:number) => (
-                                        <div key={index} className={`flex flex-row items-center justify-center p-2 rounded-md border-2 border-slate-400 cursor-pointer ${String.fromCharCode(65 + index) === answers[currentQuestion] ? "bg-green-200" : ""}`}
+                                        <div key={index} className={`flex flex-row  items-center justify-center p-2 rounded-md border-2 border-slate-400 cursor-pointer ${String.fromCharCode(65 + index) === answers[currentQuestion] ? "bg-green-200" : ""}`}
                                             onClick={() => handleSubmitAnswer(index, String.fromCharCode(65 + index))}
                                         >
                                             <div className='w-[20px] h-[20px] border-2 border-slate-400 rounded-[50%] flex justify-center items-center'>{String.fromCharCode(65 + index)}</div>
-                                            <div className='w-[320px] ml-2'><p dangerouslySetInnerHTML={{__html: value.answerKey}}></p></div>
+                                            <div className='sm:w-[320px] w-[280px] ml-2'><p dangerouslySetInnerHTML={{__html: value.answerKey}}></p></div>
                                         </div>
                                     ))
                                 }

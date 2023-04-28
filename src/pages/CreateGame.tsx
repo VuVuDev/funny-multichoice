@@ -179,9 +179,9 @@ function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerO
 
     return (
         <div className='w-screen h-screen flex items-center justify-center'>
-            <div className='w-[960px] h-[520px] bg-[#ffffffc9] rounded-lg z-10'>
+            <div className='w-[960px] sm:h-[520px] h-[720px] bg-[#ffffffc9] rounded-lg z-10 m-3 '>
                 <Topbar></Topbar>
-                <div className='flex flex-col justify-center items-center mt-[50px]'>
+                <div className='flex flex-col justify-center items-center sm:mt-[50px] mt-[100px] p-2 text-center'>
                     <h1 className='font-mono font-extrabold text-[50px]'>Create Game😤</h1>
                 </div>
                 <div className='flex flex-col items-center justify-center mt-[25px] p-[20px]'>
