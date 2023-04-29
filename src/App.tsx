@@ -81,9 +81,6 @@ function App() {
   const [answers, setAnswers] = useState<string[]>(Array.from({length: 6} , () => "empty"));
   const [final, setFinal]  = useState<string>('');
   const [matchCount, setMatchCount] = useState<number>(0); 
-  console.log(matchCount);
-  console.log(tempArray);
-  
   //processing data 
   
   const fetchData = async () => {
@@ -169,8 +166,6 @@ const handleSetQuestion = (data:any) => {
     setArrayTempOne(tempA);
     setArrayTempTwo(tempB); 
     questionCorrectTemp = [];
-    console.log(tempA);
-    console.log(tempB);
 }
 
 
