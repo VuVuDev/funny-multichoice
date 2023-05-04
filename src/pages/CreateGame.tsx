@@ -108,13 +108,13 @@ function CreateGame({setGameData, setPlayerOne, setAnswers,setPlayerTwo, playerO
             alert("Input cant empty!");
             inputRefOne.current?.focus();
             return;
-        };
+        }
         if(playerTwo.name === '' || playerTwo.name.trimEnd() === "") {
             alert("Input cant empty!");
             inputRefTwo.current?.focus();
             return;
         }
-        const pattern = /[!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?]/;
+        const pattern = /[!@#$%^&*()+\-=\\[\]{};':"\\|,.<>\\/?]/;
         if(pattern.test(playerOne.name)) {
           alert("Name does not contain special character!");
           setPlayerOne({

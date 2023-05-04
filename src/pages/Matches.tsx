@@ -118,7 +118,7 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
     }
     // console.log(answers);
     const handleSubmitAnswer = (answerIndex: number, answerValue: string) => {  
-        let newList = [...answers];
+        const newList = [...answers];
         if(answers[currentQuestion] === answerValue) {
             newList[currentQuestion] = "empty";
             setAnswers(newList);
@@ -133,8 +133,8 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
     let countTwo = 0;
 
     const handleSetPlayerChosen = () => {
-        let tempA:string[] = [];
-        let tempB:string[] = [];
+        const tempA:string[] = [];
+        const tempB:string[] = [];
         for( let i = 0; i < answers.length; i++ ) {
             if(i%2 === 0) {
                 tempA.push(answers[i]);

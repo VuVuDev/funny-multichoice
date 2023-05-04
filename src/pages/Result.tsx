@@ -56,7 +56,7 @@ function Result({gameData, setFinal, matchCount}:IPros) {
     }
     const handlSearch = () => {
         setSearch(true);
-        let newGameData = gameData.filter((value:IPlayer['player']) => {
+        const newGameData = gameData.filter((value:IPlayer['player']) => {
             return value.name.toLowerCase().includes(searchInput.toLowerCase());
         })
         setSearchList([...newGameData]);

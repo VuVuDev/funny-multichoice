@@ -23,6 +23,17 @@ interface IMatch {
   }
 }
 
+interface IData {
+  data: {
+    category: string;
+    correct_answer: string;
+    difficulty: string;
+    incorrect_answers: string[];
+    question: string;
+    type: string
+  }
+}
+
 interface IPlayer {
   player: {
     id: number;
@@ -71,17 +82,22 @@ function App() {
   });
   const [gameData, setGameData] = useState<IPlayer['player'][]>([]);
   const [loading, setLoading] = useState<boolean>(false);  
-  let [tempArray, setTempArray] = useState<any>([{
-    text:'',
-    answers:[],
-  }])
+  const [tempArray, setTempArray] = useState<ITempArray['temp'][]>([{
+    text: '',
+    answers: []
+  }]);
   const [arrayTempOne, setArrayTempOne] = useState<string[]>([]);
   const [arrayTempTwo, setArrayTempTwo] = useState<string[]>([]);
   const [questions, setQuestions] = useState<ITempArray['temp'][]>([]);
   const [answers, setAnswers] = useState<string[]>(Array.from({length: 6} , () => "empty"));
   const [final, setFinal]  = useState<string>('');
-  const [matchCount, setMatchCount] = useState<number>(0); 
+  const [matchCount, setMatchCount] = useState<number>(0);  
+
+  //console.log(tempArray);
   //processing data 
+
+  // console.log(tempArray);
+  
   
   const fetchData = async () => {
     setLoading(true);
@@ -89,7 +105,7 @@ function App() {
         const responses = await Promise.all(
             Array.from({length: 6}, () => axios.get("https://opentdb.com/api.php?amount=1&type=multiple"))
         )
-        const data = responses.map((responses => responses.data.results));
+        const data = responses.map((responses => responses.data.results[0]));
         handleSetQuestion(data);
     }
     catch (error) {
@@ -100,8 +116,7 @@ function App() {
     }
 }
 
-const shuffle = (array:any) => {
-
+const shuffle = (array:string[]) => {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -111,61 +126,51 @@ const shuffle = (array:any) => {
 const getAnswerLable = (index: number) => {
     return String.fromCharCode(65 + index);
 }
-const handleSetQuestion = (data:any) => {
-     let setQuestionList = data.map((value:any) => {
-        return value.map((item:any) => {
-            let shuffleAnswer = shuffle([...item.incorrect_answers, item.correct_answer]);
-            let correctAnswerIndex = shuffleAnswer.indexOf(item.correct_answer);
-            const lableAnswers = shuffleAnswer.map((answer:string, index:number) => ({
-                key: getAnswerLable(index),
-                answerKey: answer,
-                isCorrect: index === correctAnswerIndex,
-            }));
+const handleSetQuestion = (data:IData['data'][]) => {
+    const configQuestionData = data.map((value:IData['data']) => {
 
-            return {
-                text: item.question,
-                answers: lableAnswers,
-            }
-        })
-    }) 
-    tempArray = setQuestionList;
-    setTempArray(setQuestionList);
+      const shuffleAnswer = shuffle([...value.incorrect_answers, value.correct_answer]);
+      const correctAnswerIndex = shuffleAnswer.indexOf(value.correct_answer);
+      const lableAnswers = shuffleAnswer.map((answer:string, index: number) => ({
+        key: getAnswerLable(index),
+        answerKey: answer,
+        isCorrect: index === correctAnswerIndex,
+      }))
+      return {
+        text: value.question,
+        answers: lableAnswers,
+      }
+    })
+
+    const tempQuestionArray: ITempArray['temp'][] = configQuestionData;
+
+    setTempArray(configQuestionData);
+    setQuestions(configQuestionData);
     setArrayTempOne([]);
     setArrayTempTwo([]);
 
-    let questionCorrectTemp: string[] = [];
-    tempArray?.map((value:any) => {
-        value.map((item:ITempArray['temp']) => {
-            // console.log(item);  
-            item.answers.map((stuff: ILable['lableAnswer']) => {
-                if(stuff.isCorrect == true) {
-                    questionCorrectTemp.push(stuff.key);
-                }
-            })
-        })
-    })
-    let temQuestions: ITempArray['temp'][] = [];
-    tempArray.map((value:any) => {
-        value.map((item:ITempArray['temp']) => {
-            temQuestions.push(item);
-        })
-    })
-    setQuestions(temQuestions);
-    temQuestions = [];
-    // conso    le.log(questionCorrectTemp);    
-    let tempA:string[] = [];
-    let tempB:string[] = [];
-    
-    for(let i = 0; i < questionCorrectTemp.length; i++) {
-        if(i%2 === 0) {
-            tempA.push(questionCorrectTemp[i]);
-        } else {
-            tempB.push(questionCorrectTemp[i]);
+    const correct: string[] = [];
+    tempQuestionArray.map((value:ITempArray['temp']) => {
+      value.answers.map((stuff: ILable['lableAnswer']) => {
+        if(stuff.isCorrect == true) {
+          correct.push(stuff.key)
         }
+      });
+    })
+
+    const tempA:string[] = [];
+    const tempB:string[] = [];
+
+    for(let i = 0; i < correct.length; i++) {
+      if(i%2 === 0) {
+        tempA.push(correct[i])
+      } else {
+        tempB.push(correct[i]);
+      }
     }
     setArrayTempOne(tempA);
-    setArrayTempTwo(tempB); 
-    questionCorrectTemp = [];
+    setArrayTempTwo(tempB);
+
 }
 
 
