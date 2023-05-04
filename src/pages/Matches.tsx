@@ -54,9 +54,10 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
     const gotoResult = () => {
         navigate("/result")
     }
+
     const [currentPlayer, setCurrentPlayer] = useState<number>(0);
     const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-    const [countDown, setCountDown] = useState<number>(10)
+    const [countDown, setCountDown] = useState<number>(10);
     const [countDownQuestion, setCoutnDownQuestion] = useState<number>(2)
     const [countPlayerOneTime, setCountPlayerOneTime] = useState<number>(0);
     const [countPlayerTwoTime, setCountPlayeTwoTime] = useState<number>(0);
@@ -77,7 +78,7 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
         if(currentQuestion === 5 && countDown == 0) {
             handleSetTimePLay();
             clearInterval(timer);
-            gotoResult()
+            gotoResult();
         }
         if(currentPlayer === 1 && countDown === -1 ) {
             setCoutnDownQuestion(countDownQuestion => countDownQuestion - 1);
@@ -97,6 +98,7 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
             handleSetTimePLay();
         }
     }
+    
     const handleSubmit = () => {
         setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
         setCurrentQuestion(currentQuestion => currentQuestion + 1);
@@ -218,18 +220,18 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
                         if(countOne > countTwo) {
                             item.status = "Winner"
                         } else if(countOne == countTwo) {
-                            item.status = "Draw"
+                            item.status = "Draw";
                         } else {
-                            item.status = "Loser"
+                            item.status = "Loser";
                         }
                     }
                     if (index == 1 && matchCount == 2 && item.matchId == 1) {
                         if(countOne > countTwo) {
-                            item.status = "Winner"
+                            item.status = "Winner";
                         } else if(countOne == countTwo) {
-                            item.status = "Draw"
+                            item.status = "Draw";
                         } else {
-                            item.status = "Loser"
+                            item.status = "Loser";
                         }
                     }
                     return {
@@ -243,18 +245,18 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
                         if(countOne < countTwo) {
                             item.status = "Winner"
                         } else if(countOne == countTwo) {
-                            item.status = "Draw"
+                            item.status = "Draw";
                         } else {
-                            item.status = "Loser"
+                            item.status = "Loser";
                         }
                     }
                     if(index == 1 && matchCount == 2 && item.matchId == 1) {
                         if(countOne < countTwo) {
-                            item.status = "Winner"
+                            item.status = "Winner";
                         } else if(countOne == countTwo) {
-                            item.status = "Draw"
+                            item.status = "Draw";
                         } else {
-                            item.status = "Loser"
+                            item.status = "Loser";
                         }
                     }
                     return {
@@ -312,7 +314,7 @@ function Matches({loading, gameData, questions, setAnswers, answers, setGameData
                                             onClick={() => handleSubmitAnswer(index, String.fromCharCode(65 + index))}
                                         >
                                             <div className='w-[20px] h-[20px] border-2 border-slate-400 rounded-[50%] flex justify-center items-center'>{String.fromCharCode(65 + index)}</div>
-                                            <div className='sm:w-[320px] w-[280px] ml-2'><p dangerouslySetInnerHTML={{__html: value.answerKey}}></p></div>
+                                            <div className='sm:w-[320px] w-[280px] ml-2'><p dangerouslySetInnerHTML={{__html: value?.answerKey}}></p></div>
                                         </div>
                                     ))
                                 }
